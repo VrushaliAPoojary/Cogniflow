@@ -1,13 +1,10 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql://user:password@postgres:5432/assignmentdb"
+    DATABASE_URL: str = "postgresql://user:password@localhost:5432/assignmentdb"
     OPENAI_API_KEY: str = ""
-    CHROMA_PERSIST_DIR: str = "/data/chroma"
+    CHROMA_PERSIST_DIR: str = "./chroma_data"
     SERPAPI_KEY: str = ""
-    # server host/port
-    HOST: str = "0.0.0.0"
-    PORT: int = 8000
 
     class Config:
         env_file = "../.env"
