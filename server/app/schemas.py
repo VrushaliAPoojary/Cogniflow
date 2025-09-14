@@ -1,5 +1,7 @@
+# server/app/schemas.py
 from pydantic import BaseModel
 from typing import Optional
+from datetime import datetime
 
 class DocumentCreate(BaseModel):
     filename: str
@@ -8,10 +10,10 @@ class DocumentCreate(BaseModel):
 
 class DocumentOut(DocumentCreate):
     id: int
-    created_at: str
+    created_at: datetime   # use proper datetime instead of str
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # ✅ updated for Pydantic v2
 
 class QueryRequest(BaseModel):
     query: str

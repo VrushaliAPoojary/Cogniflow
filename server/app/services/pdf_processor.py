@@ -1,11 +1,10 @@
 import fitz  # PyMuPDF
-from typing import List
 
 def extract_text_from_pdf(path: str) -> str:
-    doc = fitz.open(path)
-    full_text = []
-    for page in doc:
-        txt = page.get_text()
-        if txt:
-            full_text.append(txt)
-    return "\n".join(full_text)
+    try:
+        with fitz.open(path) as doc:  # ✅ ensures file is closed
+            full_text = [page.get_text() for page in doc if page.get_text()]
+        return "\n".join(full_text).strip()
+    except Exception as e:
+        print(f"❌ Error reading PDF {path}: {e}")
+        return ""

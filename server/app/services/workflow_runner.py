@@ -1,10 +1,13 @@
+# server/app/services/workflow_runner.py
 from ..services.embeddings import query_similar
-import openai
+from openai import OpenAI
 from ..config import settings
 
-openai.api_key = settings.OPENAI_API_KEY
+# Initialize OpenAI client
+client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 def run_llm_with_context(query: str, context_texts: list = None, custom_prompt: str = None):
+    """Run query through LLM with optional KB context"""
     prompt = ""
     if custom_prompt:
         prompt += custom_prompt + "\n\n"
@@ -12,15 +15,17 @@ def run_llm_with_context(query: str, context_texts: list = None, custom_prompt: 
         prompt += "Context:\n" + "\n---\n".join(context_texts) + "\n\n"
     prompt += f"User Query: {query}\nAnswer concisely."
 
-    resp = openai.ChatCompletion.create(
-        model="gpt-4o-mini",  # change to a model you have access to
+    # ✅ New OpenAI API
+    resp = client.chat.completions.create(
+        model="gpt-4o-mini",  # switch to gpt-3.5-turbo if needed
         messages=[{"role": "user", "content": prompt}],
         max_tokens=512,
         temperature=0.2,
     )
-    return resp["choices"][0]["message"]["content"].strip()
+    return resp.choices[0].message.content.strip()
 
 def run_query_pipeline(query: str, use_kb: bool = True):
+    """Pipeline: optionally fetch similar docs, then query LLM"""
     context_texts = []
     if use_kb:
         result = query_similar(query, k=3)
