@@ -1,0 +1,105 @@
+{
+  "nodes": [
+    {
+      "id": "1",
+      "type": "input",
+      "data": {
+        "label": "\ud83d\udcdd User Query"
+      },
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "style": {
+        "background": "#fef9c3",
+        "borderRadius": "12px",
+        "padding": "10px"
+      },
+      "width": 150,
+      "height": 39,
+      "selected": true,
+      "dragging": false
+    },
+    {
+      "id": "2",
+      "data": {
+        "label": "\ud83d\udcda KnowledgeBase"
+      },
+      "position": {
+        "x": 300,
+        "y": 150
+      },
+      "style": {
+        "background": "#dbeafe",
+        "borderRadius": "12px",
+        "padding": "10px"
+      },
+      "width": 150,
+      "height": 39
+    },
+    {
+      "id": "3",
+      "data": {
+        "label": "\ud83e\udd16 LLM Engine"
+      },
+      "position": {
+        "x": 600,
+        "y": 250
+      },
+      "style": {
+        "background": "#fce7f3",
+        "borderRadius": "12px",
+        "padding": "10px"
+      },
+      "width": 150,
+      "height": 39
+    },
+    {
+      "id": "4",
+      "type": "output",
+      "data": {
+        "label": "\u2705 Output"
+      },
+      "position": {
+        "x": 900,
+        "y": 350
+      },
+      "style": {
+        "background": "#dcfce7",
+        "borderRadius": "12px",
+        "padding": "10px"
+      },
+      "width": 150,
+      "height": 39
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1-2",
+      "source": "1",
+      "target": "2",
+      "animated": true,
+      "style": {
+        "stroke": "#2563eb"
+      }
+    },
+    {
+      "id": "e2-3",
+      "source": "2",
+      "target": "3",
+      "animated": true,
+      "style": {
+        "stroke": "#9333ea"
+      }
+    },
+    {
+      "id": "e3-4",
+      "source": "3",
+      "target": "4",
+      "animated": true,
+      "style": {
+        "stroke": "#16a34a"
+      }
+    }
+  ]
+}
