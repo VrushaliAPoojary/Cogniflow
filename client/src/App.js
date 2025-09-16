@@ -1,29 +1,28 @@
+// client/src/App.js
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import WorkflowBuilder from "./pages/WorkflowBuilder";
 import ChatPage from "./pages/ChatPage";
+import WorkflowBuilder from "./pages/WorkflowBuilder";
 
 function App() {
   return (
     <Router>
-      {/* Simple Navbar */}
-      <header style={{ padding: "12px", background: "#2d3436", color: "white" }}>
-        <nav style={{ display: "flex", gap: "20px" }}>
-          <Link to="/" style={{ color: "white", textDecoration: "none" }}>
-            ⚙️ Workflow Builder
-          </Link>
-          <Link to="/chat" style={{ color: "white", textDecoration: "none" }}>
-            💬 Chat
-          </Link>
-        </nav>
-      </header>
+      <div className="min-h-screen bg-gray-50">
+        <header className="bg-white shadow p-4 flex justify-between">
+          <h1 className="text-xl font-bold">Cogniflow</h1>
+          <nav className="space-x-4">
+            <Link to="/" className="text-blue-600">Chat</Link>
+            <Link to="/workflow" className="text-blue-600">Workflow Builder</Link>
+          </nav>
+        </header>
 
-      {/* Routes */}
-      <Routes>
-        <Route path="/" element={<WorkflowBuilder />} />
-        <Route path="/chat" element={<ChatPage />} />
-        <Route path="*" element={<h2 style={{ textAlign: "center", marginTop: "20px" }}>404 - Page Not Found</h2>} />
-      </Routes>
+        <main className="p-6">
+          <Routes>
+            <Route path="/" element={<ChatPage />} />
+            <Route path="/workflow" element={<WorkflowBuilder />} />
+          </Routes>
+        </main>
+      </div>
     </Router>
   );
 }

@@ -1,14 +1,10 @@
 fastapi
 uvicorn[standard]
-python-multipart
-pydantic
 sqlalchemy
 psycopg2-binary
-alembic
-python-dotenv
-openai
+python-multipart
+pydantic-settings
 chromadb
-pymupdf    # PyMuPDF
-requests
-aiofiles
-python-jose      # optional if you add auth later
+sentence-transformers
+transformers
+torch       # if you use local HF models requiring torch

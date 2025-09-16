@@ -1,71 +1,49 @@
+// client/src/pages/WorkflowBuilder.js
 import React, { useState } from "react";
 import WorkflowCanvas from "../components/WorkflowCanvas";
 import ComponentPanel from "../components/ComponentPanel";
 import ConfigPanel from "../components/ConfigPanel";
+import { saveWorkflow } from "../api";
 
 export default function WorkflowBuilder() {
-  // central workflow state (nodes + edges)
   const [workflow, setWorkflow] = useState({ nodes: [], edges: [] });
   const [selectedNode, setSelectedNode] = useState(null);
 
-  const handleSave = () => {
-    // TODO: persist to server (POST /workflows/save)
-    console.log("Saving workflow:", workflow);
-    alert("Workflow saved (console logged).");
-  };
-
-  const handleRun = () => {
-    // TODO: call run endpoint or execute locally
-    console.log("Running workflow:", workflow);
-    alert("Workflow run started (console logged).");
+  const handleSave = async () => {
+    try {
+      const res = await saveWorkflow(workflow);
+      alert("Workflow saved: " + res.data.id);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save");
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      {/* Header */}
-      <header className="bg-white shadow-md px-6 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">⚙️ Workflow Builder</h1>
-        <div className="space-x-3">
-          <button
-            onClick={handleSave}
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow"
-          >
-            Save
-          </button>
-          <button
-            onClick={handleRun}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow"
-          >
-            Run
-          </button>
+      <header className="bg-white shadow px-6 py-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold">⚙️ Workflow Builder</h1>
+        <div>
+          <button onClick={handleSave} className="bg-green-500 text-white px-4 py-2 rounded mr-2">Save</button>
         </div>
       </header>
 
-      {/* Main layout */}
-      <div className="flex flex-1">
-        {/* Left Sidebar */}
-        <aside className="w-64 bg-white border-r shadow-lg p-4">
-          <h2 className="text-lg font-semibold mb-3">🧩 Components</h2>
+      <div className="flex flex-1 gap-4 p-6">
+        <aside className="w-64 bg-white p-4 rounded shadow">
+          <h2 className="font-semibold mb-3">Components</h2>
           <ComponentPanel />
         </aside>
 
-        {/* Canvas */}
-        <main className="flex-1 relative p-6">
-          <div className="h-full rounded-lg overflow-hidden bg-white shadow">
-            {/* grid background wrapper */}
-            <div className="h-full bg-grid">
-              <WorkflowCanvas
-                workflow={workflow}
-                setWorkflow={setWorkflow}
-                setSelectedNode={setSelectedNode}
-              />
-            </div>
-          </div>
+        <main className="flex-1">
+          <WorkflowCanvas
+            workflow={workflow}
+            setWorkflow={setWorkflow}
+            setSelectedNode={setSelectedNode}
+          />
         </main>
 
-        {/* Config Panel */}
-        <aside className="w-72 bg-white border-l shadow-lg p-4">
-          <h2 className="text-lg font-semibold mb-3">⚙️ Configuration</h2>
+        <aside className="w-80 bg-white p-4 rounded shadow">
+          <h2 className="font-semibold mb-3">Configuration</h2>
           <ConfigPanel workflow={workflow} node={selectedNode} />
         </aside>
       </div>

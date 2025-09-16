@@ -1,13 +1,33 @@
-from fastapi import APIRouter
+# server/app/routers/workflows_router.py
+from fastapi import APIRouter, HTTPException
+import os, json, uuid
 
-router = APIRouter(tags=["Workflows"])
+from ..services.workflow_runner import run_workflow
 
-# Simple placeholder router
+router = APIRouter(prefix="/workflows", tags=["Workflows"])
+
+SAVE_DIR = "./data/workflows"
+os.makedirs(SAVE_DIR, exist_ok=True)
+
 @router.post("/save")
 def save_workflow(workflow: dict):
+    uid = str(uuid.uuid4())
+    path = os.path.join(SAVE_DIR, f"{uid}.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(workflow, f, indent=2)
+    return {"status": "saved", "id": uid, "path": path}
+
+@router.post("/run")
+def run_saved_workflow(payload: dict):
     """
-    Save a workflow definition (nodes + edges).
-    For now, just echo back the workflow. 
-    In real use, you could persist this in Postgres or a JSON file.
+    payload: {
+      workflow: { nodes: [...], edges: [...] },
+      query: "user text"
+    }
     """
-    return {"status": "saved", "workflow": workflow}
+    workflow = payload.get("workflow")
+    query = payload.get("query","")
+    if not workflow:
+        raise HTTPException(status_code=400, detail="workflow required")
+    out = run_workflow(workflow, input_query=query)
+    return out

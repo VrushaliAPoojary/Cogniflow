@@ -1,33 +1,47 @@
-import React from "react";
+// client/src/components/ConfigPanel.js
+import React, { useState, useEffect } from "react";
 
 export default function ConfigPanel({ workflow = { nodes: [], edges: [] }, node = null }) {
+  const [localData, setLocalData] = useState(node ? node.data : null);
+
+  useEffect(() => {
+    setLocalData(node ? node.data : null);
+  }, [node]);
+
+  const handleSave = () => {
+    if (!node) return;
+    // find node in workflow and update its data
+    const nidx = workflow.nodes.findIndex(n => n.id === node.id);
+    if (nidx === -1) {
+      alert("Node not found in workflow");
+      return;
+    }
+    workflow.nodes[nidx].data = localData;
+    // This function mutates parent workflow; parent should be aware of update via ReactFlow
+    alert("Configuration saved (in memory). Click Save workflow to persist.");
+  };
+
+  if (!node) {
+    return (
+      <div>
+        <div className="text-sm">Select a node to edit its settings. Current workflow has <b>{workflow.nodes.length}</b> nodes.</div>
+      </div>
+    );
+  }
+
   return (
     <div>
-      {node ? (
-        <div>
-          <h3 className="text-md font-semibold mb-2">Selected Node</h3>
-          <div className="p-3 border rounded bg-gray-50">
-            <div><strong>ID:</strong> {node.id}</div>
-            <div><strong>Type:</strong> {node.type || "default"}</div>
-            <div className="mt-2 text-sm text-gray-700">
-              <strong>Data:</strong>
-              <pre className="text-xs mt-1 overflow-auto max-h-40 bg-white p-2 rounded">{JSON.stringify(node.data, null, 2)}</pre>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div>
-          <h3 className="text-md font-semibold mb-2">Workflow</h3>
-          <div className="p-3 border rounded bg-gray-50 text-sm">
-            <div><strong>Nodes:</strong> {workflow.nodes?.length || 0}</div>
-            <div><strong>Edges:</strong> {workflow.edges?.length || 0}</div>
-            <div className="mt-3">
-              <strong>Full data:</strong>
-              <pre className="text-xs mt-1 overflow-auto max-h-56 bg-white p-2 rounded">{JSON.stringify(workflow, null, 2)}</pre>
-            </div>
-          </div>
-        </div>
-      )}
+      <div className="mb-2"><strong>Node ID:</strong> {node.id}</div>
+      <div className="mb-2"><strong>Type:</strong> {localData?.type || node.type}</div>
+
+      <div className="mb-3">
+        <label className="block text-sm font-medium">Prompt</label>
+        <textarea rows={6} className="w-full border p-2 rounded" value={localData?.prompt || ""} onChange={(e)=>setLocalData({...localData, prompt:e.target.value})}></textarea>
+      </div>
+
+      <div className="flex gap-2">
+        <button onClick={handleSave} className="bg-blue-600 text-white px-3 py-2 rounded">Save Config</button>
+      </div>
     </div>
   );
 }
